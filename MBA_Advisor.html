@@ -233,6 +233,40 @@ nav.tabs button.active::after{content:'';position:absolute;left:10px;right:10px;
 .spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 .spinner.dark{border-color:rgba(208,74,2,.3);border-top-color:var(--bc-blue)}
 .school-chip{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+
+/* ── AI Suite ── */
+.btn-ai-run{width:100%;background:linear-gradient(135deg,#1c2158,#242a66);color:#fff;border:0;padding:9px 16px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-radius:8px;cursor:pointer;font-family:inherit;transition:filter .18s;margin-bottom:6px}
+.btn-ai-run:hover{filter:brightness(1.15)}
+.btn-ai-run:disabled{opacity:.5;cursor:wait}
+.ai-placeholder{text-align:center;padding:14px 10px}
+.ai-sub-text{font-size:10px;color:var(--muted);margin-top:4px}
+.ai-output{font-size:12px;line-height:1.7;color:var(--cream);padding:4px 2px}
+.ai-output strong{color:var(--bc-blue);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.ai-output em{color:var(--muted);font-style:normal}
+.ai-error{color:var(--bc-red);font-size:12px;padding:6px}
+.ai-no-key{color:var(--muted);font-size:12px;padding:6px;font-style:italic}
+.gap-item{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:8px 10px;border-radius:8px;margin-bottom:6px;border-left:3px solid var(--line-2);background:rgba(34,39,94,.06);align-items:center}
+[data-theme="dark"] .gap-item{background:rgba(255,255,255,.05)}
+.gap-high{border-left-color:var(--green)}
+.gap-mid{border-left-color:#e6a817}
+.gap-low{border-left-color:var(--muted)}
+.gap-label{font-size:12px;font-weight:600;color:var(--cream);grid-column:1}
+.gap-impact{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:right;grid-column:2;grid-row:1/3}
+.gap-high .gap-impact{color:var(--green)}.gap-mid .gap-impact{color:#e6a817}.gap-low .gap-impact{color:var(--muted)}
+.gap-tip{font-size:10px;color:var(--muted);grid-column:1}
+.chat-messages{min-height:100px;max-height:240px;overflow-y:auto;padding:4px 2px;margin-bottom:8px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}
+.chat-msg{font-size:12px;line-height:1.6;padding:8px 11px;border-radius:10px;max-width:92%}
+.chat-user{background:linear-gradient(135deg,rgba(208,74,2,.15),rgba(208,74,2,.08));border:1px solid rgba(208,74,2,.25);align-self:flex-end;color:var(--cream)}
+.chat-assistant{background:rgba(34,39,94,.08);border:1px solid var(--line-2);align-self:flex-start;color:var(--cream)}
+[data-theme="dark"] .chat-assistant{background:rgba(255,255,255,.06)}
+.chat-input-row{display:flex;gap:6px}
+.chat-input{flex:1;padding:8px 11px;border:1.5px solid var(--line-2);border-radius:8px;font-family:inherit;font-size:12px;color:var(--input-color);background:var(--input-bg);transition:border-color .15s}
+.chat-input:focus{outline:none;border-color:var(--bc-blue)}
+.btn-chat-send{background:var(--bc-blue);color:#fff;border:0;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;letter-spacing:.04em;transition:filter .15s;white-space:nowrap}
+.btn-chat-send:hover{filter:brightness(1.1)}
+.btn-chat-send:disabled{opacity:.5;cursor:wait}
+.ai-suite-header{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ai-suite-header::after{content:'';flex:1;height:1px;background:var(--line)}
 </style>
 </head>
 <body>
@@ -459,6 +493,59 @@ nav.tabs button.active::after{content:'';position:absolute;left:10px;right:10px;
       </div>
       <div id="knn-summary"></div>
       <div class="alumni-grid" id="alumni-grid"></div>
+    </div>
+  </div>
+
+  <!-- AI Coaching Suite -->
+  <div class="panel-grid" id="ai-suite-section" style="display:none">
+    <div class="col-12"><div class="ai-suite-header">AI Coaching Suite · Powered by Gemini 3.1 Flash Preview</div></div>
+
+    <!-- Coaching Report -->
+    <div class="panel accent-left col-7">
+      <div class="panel-head">
+        <div><div class="panel-title">🧠 AI Coaching Report</div><div class="panel-sub">Strengths · gaps · 90-day action plan</div></div>
+        <span class="ai-tag">AI</span>
+      </div>
+      <div id="coaching-placeholder" class="ai-placeholder">
+        <button class="btn-ai-run" id="btn-coaching">Generate Coaching Report</button>
+        <div class="ai-sub-text">Personalized analysis of your profile vs. target school</div>
+      </div>
+      <div id="coaching-output" class="ai-output" style="display:none"></div>
+    </div>
+
+    <!-- Gap Fixer -->
+    <div class="panel accent-green col-5">
+      <div class="panel-head">
+        <div><div class="panel-title">🎯 Profile Gap Fixer</div><div class="panel-sub">What moves your probability the most</div></div>
+        <span class="panel-tag">instant · local</span>
+      </div>
+      <div id="gap-fixer-content"></div>
+    </div>
+
+    <!-- Essay Angles -->
+    <div class="panel col-5">
+      <div class="panel-head">
+        <div><div class="panel-title">✍️ Essay Angle Generator</div><div class="panel-sub">3 narrative angles for your application</div></div>
+        <span class="ai-tag">AI</span>
+      </div>
+      <div id="essay-placeholder" class="ai-placeholder">
+        <button class="btn-ai-run" id="btn-essay">Generate Essay Angles</button>
+        <div class="ai-sub-text">Tailored to your profile &amp; top school</div>
+      </div>
+      <div id="essay-output" class="ai-output" style="display:none"></div>
+    </div>
+
+    <!-- AI Chat -->
+    <div class="panel col-7">
+      <div class="panel-head">
+        <div><div class="panel-title">💬 Ask AI About Your Results</div><div class="panel-sub">Chat with Gemini about your profile</div></div>
+        <span class="ai-tag">AI</span>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" class="chat-input" placeholder="Why NYU? How do I improve? What should I highlight in essays?" />
+        <button class="btn-chat-send" id="btn-chat-send">Send</button>
+      </div>
     </div>
   </div>
 
@@ -846,6 +933,23 @@ function renderResults(user, ranked) {
   document.getElementById('results-placeholder').style.display = 'none';
   document.getElementById('results-content').classList.add('show');
   document.getElementById('live-badge').classList.add('show');
+
+  // AI Suite
+  currentUser = user; currentRanked = ranked;
+  chatSystemContext = buildProfileCtx(user, ranked);
+  chatHistory = [];
+  document.getElementById('ai-suite-section').style.display = '';
+  renderGapFixer(user, ranked);
+
+  // Reset AI panels so re-analysis re-arms the buttons
+  ['coaching-output','essay-output'].forEach(id => { document.getElementById(id).style.display='none'; document.getElementById(id).innerHTML=''; });
+  ['coaching-placeholder','essay-placeholder'].forEach(id => document.getElementById(id).style.display='');
+  document.getElementById('btn-coaching').disabled = false; document.getElementById('btn-coaching').textContent = 'Generate Coaching Report';
+  document.getElementById('btn-essay').disabled = false; document.getElementById('btn-essay').textContent = 'Generate Essay Angles';
+  document.getElementById('chat-messages').innerHTML = '';
+
+  // Auto-run coaching if API key already entered
+  if (document.getElementById('api-key').value.trim()) generateCoachingReport();
 }
 
 function toggleDetail(i){const d=document.getElementById('detail-'+i);d.classList.toggle('open');}
@@ -1123,6 +1227,157 @@ For pre_mba_industry: Tech=software/IT/data, Finance=banking/PE/IB, Consulting=c
   }
 }
 
+// ════════ AI SUITE ════════
+let currentUser = null, currentRanked = null, chatHistory = [], chatSystemContext = '';
+
+async function callGemini(prompt) {
+  const apiKey = document.getElementById('api-key').value.trim();
+  if (!apiKey) throw new Error('No API key — enter your Gemini key in Step 1 above.');
+  const models = ['gemini-3.1-flash-preview', 'gemini-3.1-flash-lite-preview'];
+  const body = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.72, maxOutputTokens: 1400 } };
+  let data, lastError;
+  for (const model of models) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (res.ok) { data = await res.json(); break; }
+    const err = await res.json().catch(() => ({}));
+    lastError = err.error?.message || `HTTP ${res.status}`;
+  }
+  if (!data) throw new Error(lastError);
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Empty response from Gemini');
+  return text;
+}
+
+function formatAIText(t) {
+  return t
+    .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+    .replace(/^#{1,3} (.+)$/gm, '<strong>$1</strong>')
+    .replace(/\n{2,}/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
+function buildProfileCtx(user, ranked) {
+  const best = ranked[0], st = best.stats;
+  return `CANDIDATE PROFILE:
+• Target Industry: ${user.industry}
+• GPA: ${fmt(user.gpa)} (${best.school} avg: ${fmt(st.avgGPA)})
+• GMAT: ${user.noGmat ? 'Test-optional (waived)' : user.gmat + ' (school avg: ' + Math.round(st.avgGMAT) + ')'}
+• Work Experience: ${user.exp} yrs (school avg: ${fmt(st.avgWorkExp, 1)} yrs)
+• Pre-MBA Industry: ${user.premba}
+• Military Veteran: ${user.veteran ? 'Yes' : 'No'}
+SCHOOL RANKINGS:
+${ranked.map((r, i) => `${i + 1}. ${r.school} — ${pct(r.prob)} offer probability, fit ${r.score}/100`).join('\n')}`;
+}
+
+async function generateCoachingReport() {
+  const out = document.getElementById('coaching-output');
+  const ph = document.getElementById('coaching-placeholder');
+  const btn = document.getElementById('btn-coaching');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner dark"></span> Generating…';
+  try {
+    const text = await callGemini(
+      buildProfileCtx(currentUser, currentRanked) + `\n\nYou are an elite MBA career coach. Write a concise, direct coaching report. Use this exact structure:\n\n**STRENGTHS**\n• [2–3 bullets on what's working]\n\n**GAPS TO ADDRESS**\n• [2–3 specific, honest weaknesses vs. target school — use actual numbers]\n\n**YOUR 90-DAY ACTION PLAN**\n1. [Concrete step]\n2. [Concrete step]\n3. [Concrete step]\n\nMax 220 words. No fluff. Be specific.`
+    );
+    out.innerHTML = formatAIText(text);
+    ph.style.display = 'none'; out.style.display = '';
+  } catch(e) {
+    out.innerHTML = `<p class="ai-error">⚠️ ${e.message}</p>`;
+    ph.style.display = 'none'; out.style.display = '';
+  }
+}
+
+function renderGapFixer(user, ranked) {
+  const best = ranked[0], st = best.stats, base = best.prob;
+  const tweaks = [];
+
+  if (user.gpa < 3.9) {
+    const u2 = {...user, gpa: Math.min(4.0, user.gpa + 0.3)};
+    const r2 = analyzeProfile(u2).find(r => r.school === best.school);
+    tweaks.push({ label: `Raise GPA to ${fmt(u2.gpa)}`, delta: (r2?.prob || base) - base, tip: `You: ${fmt(user.gpa)} · School avg: ${fmt(st.avgGPA)}` });
+  }
+  if (!user.noGmat && user.gmat < 770) {
+    const u2 = {...user, gmat: Math.min(800, user.gmat + 50)};
+    const r2 = analyzeProfile(u2).find(r => r.school === best.school);
+    tweaks.push({ label: `Raise GMAT to ${u2.gmat}`, delta: (r2?.prob || base) - base, tip: `You: ${user.gmat} · School avg: ${Math.round(st.avgGMAT)}` });
+  }
+  if (user.exp < st.avgWorkExp - 0.5) {
+    const u2 = {...user, exp: Math.round(st.avgWorkExp)};
+    const r2 = analyzeProfile(u2).find(r => r.school === best.school);
+    tweaks.push({ label: `Reach ${u2.exp} yrs experience`, delta: (r2?.prob || base) - base, tip: `You: ${user.exp} yrs · School avg: ${fmt(st.avgWorkExp, 1)} yrs` });
+  }
+  if (!user.veteran) {
+    const u2 = {...user, veteran: true};
+    const r2 = analyzeProfile(u2).find(r => r.school === best.school);
+    const d = (r2?.prob || base) - base;
+    if (d > 0) tweaks.push({ label: '🎖️ Veteran recruitment programs', delta: d, tip: 'JMO programs, consulting vet initiatives' });
+  }
+  tweaks.sort((a, b) => b.delta - a.delta);
+
+  const el = document.getElementById('gap-fixer-content');
+  if (!tweaks.length) { el.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:8px">Your profile is already well-optimized for your top school.</p>'; return; }
+  el.innerHTML = tweaks.map(t => {
+    const cls = t.delta >= 0.05 ? 'gap-high' : t.delta >= 0.02 ? 'gap-mid' : 'gap-low';
+    const sign = t.delta > 0 ? '+' : '';
+    return `<div class="gap-item ${cls}">
+      <div class="gap-label">${t.label}</div>
+      <div class="gap-impact">${sign}${(t.delta * 100).toFixed(1)}%</div>
+      <div class="gap-tip">${t.tip}</div>
+    </div>`;
+  }).join('');
+}
+
+async function generateEssayAngles() {
+  const out = document.getElementById('essay-output');
+  const ph = document.getElementById('essay-placeholder');
+  const btn = document.getElementById('btn-essay');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner dark"></span> Generating…';
+  try {
+    const best = currentRanked[0];
+    const text = await callGemini(
+      buildProfileCtx(currentUser, currentRanked) + `\n\nYou are a top MBA admissions consultant. Generate exactly 3 essay narrative angles for applying to ${best.school}'s ${currentUser.industry} track. For each:\n\n**ANGLE [N]: [Punchy title]**\n*Why it works:* [1 sentence]\n*Open with:* [Specific hook or story beat from their background]\n*Ties to:* [${best.school} program element or value]\n\nBe creative, specific, tailored to their actual profile. No generic advice.`
+    );
+    out.innerHTML = formatAIText(text);
+    ph.style.display = 'none'; out.style.display = '';
+  } catch(e) {
+    out.innerHTML = `<p class="ai-error">⚠️ ${e.message}</p>`;
+    ph.style.display = 'none'; out.style.display = '';
+  }
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  appendChatMsg('user', msg);
+  input.value = '';
+  const btn = document.getElementById('btn-chat-send');
+  btn.disabled = true; btn.textContent = '…';
+  chatHistory.push(msg);
+  const history = chatHistory.slice(-8).join('\nUser: ');
+  try {
+    const text = await callGemini(
+      chatSystemContext + `\n\nConversation so far:\nUser: ${history}\n\nRespond as a sharp, concise MBA career advisor. Max 150 words.`
+    );
+    appendChatMsg('assistant', text);
+    chatHistory.push('Advisor: ' + text);
+  } catch(e) {
+    appendChatMsg('assistant', `⚠️ ${e.message}`);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Send';
+  }
+}
+
+function appendChatMsg(role, text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `chat-msg chat-${role}`;
+  div.innerHTML = role === 'assistant' ? formatAIText(text) : text.replace(/</g,'&lt;');
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
 // ════════ EVENTS ════════
 document.getElementById('advisor-form').addEventListener('submit', e => {
   e.preventDefault();
@@ -1147,6 +1402,7 @@ document.getElementById('btn-clear').addEventListener('click', () => {
   document.getElementById('results-content').classList.remove('show');
   document.getElementById('chart-section').style.display = 'none';
   document.getElementById('similar-section').style.display = 'none';
+  document.getElementById('ai-suite-section').style.display = 'none';
   document.getElementById('results-industry-tag').textContent = '—';
   document.getElementById('kpi-fit').textContent = '—';
   document.getElementById('kpi-fit-sub').textContent = 'run analysis first';
@@ -1175,6 +1431,10 @@ document.getElementById('btn-clear').addEventListener('click', () => {
 document.getElementById('f-no-gmat').addEventListener('change', () => { applyNoGmatState(); debouncedLive(); });
 document.getElementById('f-veteran').addEventListener('change', () => { applyVeteranState(); debouncedLive(); });
 document.getElementById('btn-scan').addEventListener('click', scanResume);
+document.getElementById('btn-coaching').addEventListener('click', generateCoachingReport);
+document.getElementById('btn-essay').addEventListener('click', generateEssayAngles);
+document.getElementById('btn-chat-send').addEventListener('click', sendChat);
+document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
 
 document.querySelectorAll('nav.tabs button').forEach(btn => {
   btn.addEventListener('click', function(){

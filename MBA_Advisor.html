@@ -253,7 +253,7 @@ nav.tabs button.active::after{content:'';position:absolute;left:10px;right:10px;
       <div>
         <div class="crumb">People analytics · <b>MBA career advisor</b></div>
         <h1 class="title">MBA School Advisor · <em>Career Analytics</em></h1>
-        <p class="subtitle">Upload your resume for AI auto-fill, or use sliders. Test-optional &amp; veteran-status aware. Powered by 1,000 historical alumni outcomes + Gemini 2.5 Flash.</p>
+        <p class="subtitle">Upload your resume for AI auto-fill, or use sliders. Test-optional &amp; veteran-status aware. Powered by 1,000 historical alumni outcomes + Gemini 3.1 Flash Preview.</p>
       </div>
     </div>
   </div>
@@ -296,7 +296,7 @@ nav.tabs button.active::after{content:'';position:absolute;left:10px;right:10px;
       <div class="resume-section">
         <div class="resume-head">
           <strong>📄 Auto-fill from resume</strong>
-          <span class="ai-tag">AI · Gemini 2.5 Flash</span>
+          <span class="ai-tag">AI · Gemini 3.1 Flash Preview</span>
         </div>
         <div class="resume-body">
           <input type="password" id="api-key" class="api-key-input" placeholder="Gemini API key (saved locally only)" />
@@ -1033,7 +1033,7 @@ async function scanResume() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner dark"></span>';
   status.className = 'r-status info';
-  status.textContent = '⚡ Scanning resume with Gemini 2.5 Flash...';
+  status.textContent = '⚡ Scanning resume with Gemini 3.1 Flash Preview...';
 
   try {
     const b64 = await fileToBase64(file);
